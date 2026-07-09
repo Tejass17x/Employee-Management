@@ -3,10 +3,23 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LoginPage from './components/LoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import HRDashboard from './pages/HRDashboard';
-import EmployeeDashboard from './pages/EmployeeDashboard';
 import DashboardLayout from './components/DashboardLayout';
 import PlaceholderPage from './pages/PlaceholderPage'; 
 import { AuthProvider, useAuth } from './context/AuthContext';
+
+// Import Employee Pages
+import DashboardHome from './pages/employee/DashboardHome';
+import Profile from './pages/employee/Profile';
+import Attendance from './pages/employee/Attendance';
+import Leave from './pages/employee/Leave';
+import Payroll from './pages/employee/Payroll';
+import Tasks from './pages/employee/Tasks';
+import Performance from './pages/employee/Performance';
+import Chat from './pages/employee/Chat';
+import Notifications from './pages/employee/Notifications';
+import Training from './pages/employee/Training';
+import Documents from './pages/employee/Documents';
+import Settings from './pages/employee/Settings';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user } = useAuth();
@@ -37,12 +50,18 @@ function App() {
           <Route path="/hr/recruitment" element={<ProtectedRoute allowedRoles={['HR']}><PlaceholderPage title="Recruitment" /></ProtectedRoute>} />
 
           {/* ================= EMPLOYEE ROUTES ================= */}
-          <Route path="/employee" element={<ProtectedRoute allowedRoles={['Employee']}><EmployeeDashboard /></ProtectedRoute>} />
-          <Route path="/employee/profile" element={<ProtectedRoute allowedRoles={['Employee']}><PlaceholderPage title="My Profile" /></ProtectedRoute>} />
-          <Route path="/employee/attendance" element={<ProtectedRoute allowedRoles={['Employee']}><PlaceholderPage title="Attendance Tracker" /></ProtectedRoute>} />
-          <Route path="/employee/leave" element={<ProtectedRoute allowedRoles={['Employee']}><PlaceholderPage title="Leave Application" /></ProtectedRoute>} />
-          <Route path="/employee/payroll" element={<ProtectedRoute allowedRoles={['Employee']}><PlaceholderPage title="My Payroll & Slips" /></ProtectedRoute>} />
-          <Route path="/employee/tasks" element={<ProtectedRoute allowedRoles={['Employee']}><PlaceholderPage title="My Tasks" /></ProtectedRoute>} />
+          <Route path="/employee" element={<ProtectedRoute allowedRoles={['Employee']}><DashboardHome /></ProtectedRoute>} />
+          <Route path="/employee/profile" element={<ProtectedRoute allowedRoles={['Employee']}><Profile /></ProtectedRoute>} />
+          <Route path="/employee/attendance" element={<ProtectedRoute allowedRoles={['Employee']}><Attendance /></ProtectedRoute>} />
+          <Route path="/employee/leave" element={<ProtectedRoute allowedRoles={['Employee']}><Leave /></ProtectedRoute>} />
+          <Route path="/employee/payroll" element={<ProtectedRoute allowedRoles={['Employee']}><Payroll /></ProtectedRoute>} />
+          <Route path="/employee/tasks" element={<ProtectedRoute allowedRoles={['Employee']}><Tasks /></ProtectedRoute>} />
+          <Route path="/employee/performance" element={<ProtectedRoute allowedRoles={['Employee']}><Performance /></ProtectedRoute>} />
+          <Route path="/employee/chat" element={<ProtectedRoute allowedRoles={['Employee']}><Chat /></ProtectedRoute>} />
+          <Route path="/employee/notifications" element={<ProtectedRoute allowedRoles={['Employee']}><Notifications /></ProtectedRoute>} />
+          <Route path="/employee/training" element={<ProtectedRoute allowedRoles={['Employee']}><Training /></ProtectedRoute>} />
+          <Route path="/employee/documents" element={<ProtectedRoute allowedRoles={['Employee']}><Documents /></ProtectedRoute>} />
+          <Route path="/employee/settings" element={<ProtectedRoute allowedRoles={['Employee']}><Settings /></ProtectedRoute>} />
         </Routes>
       </Router>
     </AuthProvider>
