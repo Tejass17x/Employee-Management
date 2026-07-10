@@ -1,6 +1,8 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
+const { connectDB } = require('./config/db');
+const employeeRoutes = require('./routes/employeeRoutes');
 
 const app = express();
 
@@ -17,13 +19,14 @@ app.use((req, res, next) => {
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',      
-    password: 'root', // ⚠️ Apna MySQL password yahan theek rakhein
+    password: 'manu@123',
     database: 'nexus_hr_db'
 });
 
 db.connect((err) => {
     if (err) throw err;
     console.log('✅ MySQL Database Connected Successfully!');
+    connectDB();
 });
 
 // ================= LOGIN API =================
@@ -103,6 +106,9 @@ app.put('/api/users/update', (req, res) => {
         res.json({ success: true });
     });
 });
+
+// ================= EMPLOYEE ROUTES =================
+app.use('/api/employee', employeeRoutes);
 
 // Fallback 404 Handler
 app.use((req, res) => {

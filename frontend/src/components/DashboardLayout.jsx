@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { 
@@ -11,6 +11,20 @@ const DashboardLayout = ({ children }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showResults, setShowResults] = useState(false);
+  const searchRef = useRef(null);
+  const [theme, setTheme] = useState('dark');
+
+  // Apply the "light" class to <html> whenever theme changes, so CSS
+  // variables defined in index.css (.light { ... }) take effect app-wide.
+  useEffect(() => {
+    document.documentElement.classList.toggle('light', theme === 'light');
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   const getSidebarConfig = () => {
     if (user?.role === 'Admin') {
@@ -59,18 +73,41 @@ const DashboardLayout = ({ children }) => {
   };
 
   const config = getSidebarConfig();
-  
+
   const getInitials = (name) => {
     if (!name) return 'U';
     const split = name.split(' ');
     return split.length > 1 ? split[0][0] + split[1][0] : split[0][0];
   };
 
+  const filteredResults = searchQuery.trim()
+    ? config.items.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
+
+  // Close search dropdown when clicking outside of it
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setShowResults(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleResultClick = (path) => {
+    navigate(path);
+    setSearchQuery('');
+    setShowResults(false);
+  };
+
   return (
-    <div className="h-screen w-full bg-[#0a0f1c] text-white flex font-sans overflow-hidden">
+    <div className="h-screen w-full bg-[var(--bg-primary)] text-[var(--text-primary)] flex font-sans overflow-hidden transition-colors duration-200">
       
       {/* ================= SIDEBAR ================= */}
-      <aside className="w-[260px] h-full flex flex-col border-r border-slate-800/80 bg-[#0b1221] flex-shrink-0">
+      <aside className="w-[260px] h-full flex flex-col border-r border-slate-800/80 bg-[var(--bg-panel)] flex-shrink-0 transition-colors duration-200">
         <div className="h-[72px] px-6 flex items-center justify-between border-b border-slate-800/50 flex-shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-[#3b82f6] rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
@@ -110,7 +147,7 @@ const DashboardLayout = ({ children }) => {
           })}
         </nav>
 
-        <div className="p-4 border-t border-slate-800/80 flex items-center justify-between flex-shrink-0 bg-[#0b1221]">
+        <div className="p-4 border-t border-slate-800/80 flex items-center justify-between flex-shrink-0 bg-[var(--bg-panel)]">
           <div className="flex items-center gap-3 overflow-hidden">
             <div className={`w-9 h-9 flex-shrink-0 rounded-full flex items-center justify-center font-bold text-sm ${
               user?.role === 'Admin' ? 'bg-[#f59e0b] text-amber-950' : 'bg-[#3b82f6] text-white'
@@ -131,15 +168,50 @@ const DashboardLayout = ({ children }) => {
       </aside>
 
       {/* ================= MAIN DASHBOARD CONTENT ================= */}
-      <main className="flex-1 flex flex-col h-full bg-[#0a0f1c] overflow-hidden">
+      <main className="flex-1 flex flex-col h-full bg-[var(--bg-primary)] overflow-hidden transition-colors duration-200">
         <header className="h-[72px] px-8 flex items-center justify-between border-b border-slate-800 flex-shrink-0">
-          <div className="relative w-96">
-            <input type="text" placeholder="Search..." className="w-full bg-[#12192b] border border-slate-700/50 rounded-lg pl-10 pr-4 py-2 text-sm text-slate-300 focus:outline-none focus:border-blue-500 transition-all placeholder:text-slate-500" />
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-500" size={16} />
+          <div className="relative w-96" ref={searchRef}>
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setShowResults(true);
+              }}
+              onFocus={() => setShowResults(true)}
+              className="w-full bg-[var(--bg-input)] border border-slate-700/50 rounded-lg pl-10 pr-4 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-blue-500 transition-all placeholder:text-[var(--text-muted)]"
+            />
+            <Search className="absolute left-3 top-2.5 w-4 h-4 text-[var(--text-muted)]" size={16} />
+
+            {showResults && searchQuery.trim() && (
+              <div className="absolute top-full mt-2 w-full bg-[var(--bg-input)] border border-slate-700/50 rounded-lg shadow-lg overflow-hidden z-50">
+                {filteredResults.length > 0 ? (
+                  filteredResults.map((item) => (
+                    <button
+                      key={item.name}
+                      onClick={() => handleResultClick(item.path)}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-800/60 transition-colors text-left"
+                    >
+                      <span className="text-slate-400">{item.icon}</span>
+                      {item.name}
+                    </button>
+                  ))
+                ) : (
+                  <div className="px-4 py-3 text-sm text-slate-500">No matches found</div>
+                )}
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-4">
-            <button className="w-9 h-9 bg-[#12192b] rounded-full flex items-center justify-center text-slate-400 hover:text-white transition-colors">☼</button>
-            <button className="w-9 h-9 bg-[#12192b] rounded-full flex items-center justify-center text-slate-400 hover:text-white transition-colors">🔔</button>
+            <button
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              className="w-9 h-9 bg-[var(--bg-input)] rounded-full flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              {theme === 'dark' ? '☼' : '🌙'}
+            </button>
+            <button className="w-9 h-9 bg-[var(--bg-input)] rounded-full flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">🔔</button>
             <div className="flex items-center gap-3 pl-4 border-l border-slate-700">
               <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm ${user?.role === 'Admin' ? 'bg-[#f59e0b] text-amber-950' : 'bg-[#3b82f6] text-white'}`}>
                 {getInitials(user?.name)}
