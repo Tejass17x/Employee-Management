@@ -19,7 +19,7 @@ app.use((req, res, next) => {
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',      
-    password: 'manu@123',
+    password: 'Manya@2026',
     database: 'nexus_hr_db'
 });
 
