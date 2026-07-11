@@ -21,6 +21,12 @@ import Training from './pages/employee/Training';
 import Documents from './pages/employee/Documents';
 import Settings from './pages/employee/Settings';
 
+//Import Hr pages
+import RecruitmentPage from './pages/hr/RecruitmentPage';
+import DepartmentsPage from "./pages/hr/DepartmentsPage";
+import PerformancePage from "./pages/hr/PerformancePage";
+
+
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user } = useAuth();
   if (!user) return <Navigate to="/" />;
@@ -43,11 +49,13 @@ function App() {
           <Route path="/admin/settings" element={<ProtectedRoute allowedRoles={['Admin']}><PlaceholderPage title="System Settings" /></ProtectedRoute>} />
           <Route path="/admin/logs" element={<ProtectedRoute allowedRoles={['Admin']}><PlaceholderPage title="Audit Logs" /></ProtectedRoute>} />
 
-          {/* ================= HR ROUTES ================= */}
-          <Route path="/hr" element={<ProtectedRoute allowedRoles={['HR']}><HRDashboard /></ProtectedRoute>} />
+           {/* ================= HR ROUTES ================= */}
+           <Route path="/hr" element={<ProtectedRoute allowedRoles={['HR']}><HRDashboard /></ProtectedRoute>} />
           <Route path="/hr/employees" element={<ProtectedRoute allowedRoles={['HR']}><PlaceholderPage title="Employee Directory" /></ProtectedRoute>} />
           <Route path="/hr/leaves" element={<ProtectedRoute allowedRoles={['HR']}><PlaceholderPage title="Leave Approval" /></ProtectedRoute>} />
-          <Route path="/hr/recruitment" element={<ProtectedRoute allowedRoles={['HR']}><PlaceholderPage title="Recruitment" /></ProtectedRoute>} />
+          <Route  path="/hr/recruitment" element={<ProtectedRoute allowedRoles={['HR']}><RecruitmentPage /> </ProtectedRoute>}/>
+          <Route path="/hr/departments" element={<ProtectedRoute allowedRoles={['HR']}> <DepartmentsPage />  </ProtectedRoute>  }/>
+          <Route path="/hr/performance" element={<ProtectedRoute allowedRoles={['HR']}><PerformancePage /></ProtectedRoute>}/>
 
           {/* ================= EMPLOYEE ROUTES ================= */}
           <Route path="/employee" element={<ProtectedRoute allowedRoles={['Employee']}><DashboardHome /></ProtectedRoute>} />
