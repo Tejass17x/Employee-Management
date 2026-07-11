@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { 
-  Layers, Menu, BarChart2, Users, DollarSign, FileText, Shield, Activity, 
-  Home, User, Clock, Calendar, CheckSquare, TrendingUp, MessageSquare, 
-  Bell, GraduationCap, Settings, LogOut, ChevronRight, Briefcase, Search 
+import {
+  Layers, Menu, BarChart2, Users, DollarSign, FileText, Shield, Activity,
+  Home, User, Clock, Calendar, CheckSquare, TrendingUp, MessageSquare,
+  Bell, GraduationCap, Settings, LogOut, ChevronRight, Briefcase, Search
 } from 'lucide-react';
 
 const DashboardLayout = ({ children }) => {
@@ -82,8 +82,8 @@ const DashboardLayout = ({ children }) => {
 
   const filteredResults = searchQuery.trim()
     ? config.items.filter((item) =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+      item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
     : [];
 
   // Close search dropdown when clicking outside of it
@@ -105,13 +105,13 @@ const DashboardLayout = ({ children }) => {
 
   return (
     <div className="h-screen w-full bg-[var(--bg-primary)] text-[var(--text-primary)] flex font-sans overflow-hidden transition-colors duration-200">
-      
+
       {/* ================= SIDEBAR ================= */}
       <aside className="w-[260px] h-full flex flex-col border-r border-slate-800/80 bg-[var(--bg-panel)] flex-shrink-0 transition-colors duration-200">
         <div className="h-[72px] px-6 flex items-center justify-between border-b border-slate-800/50 flex-shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-[#3b82f6] rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
-               <Layers size={18} className="text-white" />
+              <Layers size={18} className="text-white" />
             </div>
             <span className="text-lg font-bold tracking-wide">
               Nexus {user?.role === 'Employee' ? 'Portal' : user?.role}
@@ -125,17 +125,16 @@ const DashboardLayout = ({ children }) => {
         <div className="px-6 py-5 text-[11px] font-bold text-slate-500 tracking-wider flex-shrink-0">
           {config.label}
         </div>
-        
+
         <nav className="flex-1 px-4 space-y-1 overflow-y-auto pb-4 custom-scrollbar">
           {config.items.map((item) => {
-            const isActive = location.pathname === item.path; 
+            const isActive = location.pathname === item.path;
             return (
-              <Link 
-                key={item.name} 
+              <Link
+                key={item.name}
                 to={item.path}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  isActive ? 'bg-[#1a233a] text-blue-100 shadow-sm' : 'text-slate-400 hover:text-white hover:bg-slate-800/50' 
-                }`}
+                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive ? 'bg-[#1a233a] text-blue-100 shadow-sm' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <span className={`${isActive ? 'text-blue-400' : 'text-slate-400'}`}>{item.icon}</span>
@@ -149,9 +148,8 @@ const DashboardLayout = ({ children }) => {
 
         <div className="p-4 border-t border-slate-800/80 flex items-center justify-between flex-shrink-0 bg-[var(--bg-panel)]">
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className={`w-9 h-9 flex-shrink-0 rounded-full flex items-center justify-center font-bold text-sm ${
-              user?.role === 'Admin' ? 'bg-[#f59e0b] text-amber-950' : 'bg-[#3b82f6] text-white'
-            }`}>
+            <div className={`w-9 h-9 flex-shrink-0 rounded-full flex items-center justify-center font-bold text-sm ${user?.role === 'Admin' ? 'bg-[#f59e0b] text-amber-950' : 'bg-[#3b82f6] text-white'
+              }`}>
               {getInitials(user?.name)}
             </div>
             <div className="truncate">
@@ -211,12 +209,28 @@ const DashboardLayout = ({ children }) => {
             >
               {theme === 'dark' ? '☼' : '🌙'}
             </button>
-            <button className="w-9 h-9 bg-[var(--bg-input)] rounded-full flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">🔔</button>
-            <div className="flex items-center gap-3 pl-4 border-l border-slate-700">
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm ${user?.role === 'Admin' ? 'bg-[#f59e0b] text-amber-950' : 'bg-[#3b82f6] text-white'}`}>
+            <button
+              onClick={() => navigate("/employee/notifications")}
+              title="Notifications"
+              className="w-9 h-9 bg-[var(--bg-input)] rounded-full flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+            >
+              <Bell size={18} />
+            </button>
+
+            <button
+              onClick={() => navigate("/employee/profile")}
+              title="Profile"
+              className="flex items-center gap-3 pl-4 border-l border-slate-700 cursor-pointer"
+            >
+              <div
+                className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm ${user?.role === "Admin"
+                    ? "bg-[#f59e0b] text-amber-950"
+                    : "bg-[#3b82f6] text-white"
+                  }`}
+              >
                 {getInitials(user?.name)}
               </div>
-            </div>
+            </button>
           </div>
         </header>
 
