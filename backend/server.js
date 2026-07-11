@@ -25,6 +25,7 @@ const db = mysql.createConnection({
     password: 'root',
     database: 'nexus_hr_db'
 });
+
 module.exports.db = db;
 db.connect((err) => {
     if (err) throw err;

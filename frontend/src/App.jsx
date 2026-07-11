@@ -49,8 +49,8 @@ function App() {
           <Route path="/admin/settings" element={<ProtectedRoute allowedRoles={['Admin']}><PlaceholderPage title="System Settings" /></ProtectedRoute>} />
           <Route path="/admin/logs" element={<ProtectedRoute allowedRoles={['Admin']}><PlaceholderPage title="Audit Logs" /></ProtectedRoute>} />
 
-          {/* ================= HR ROUTES ================= */}
-          <Route path="/hr" element={<ProtectedRoute allowedRoles={['HR']}><HRDashboard /></ProtectedRoute>} />
+           {/* ================= HR ROUTES ================= */}
+           <Route path="/hr" element={<ProtectedRoute allowedRoles={['HR']}><HRDashboard /></ProtectedRoute>} />
           <Route path="/hr/employees" element={<ProtectedRoute allowedRoles={['HR']}><PlaceholderPage title="Employee Directory" /></ProtectedRoute>} />
           <Route path="/hr/leaves" element={<ProtectedRoute allowedRoles={['HR']}><PlaceholderPage title="Leave Approval" /></ProtectedRoute>} />
           <Route  path="/hr/recruitment" element={<ProtectedRoute allowedRoles={['HR']}><RecruitmentPage /> </ProtectedRoute>}/>
