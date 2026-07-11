@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Users, Clock, Briefcase, Calendar, Check, X, UserPlus, Edit, Trash2, ShieldCheck, Search } from 'lucide-react';
+import { getOverview, getPendingLeaves, approveLeave} from "../services/hrApi";
 
 const attendanceData = [ { name: 'Feb', value: 92 }, { name: 'Mar', value: 94 }, { name: 'Apr', value: 93 }, { name: 'May', value: 95 }, { name: 'Jun', value: 94.2 }, { name: 'Jul', value: 96 } ];
 const hiringData = [ { name: 'Feb', value: 2 }, { name: 'Mar', value: 3 }, { name: 'Apr', value: 5 }, { name: 'May', value: 4 }, { name: 'Jun', value: 6 }, { name: 'Jul', value: 8 } ];
@@ -10,7 +11,12 @@ const HRDashboard = () => {
   const { user } = useAuth();
   const [pendingEmployees, setPendingEmployees] = useState([]);
   const [allEmployees, setAllEmployees] = useState([]); 
-  
+  const [overview, setOverview] = useState({
+    totalEmployees: 0,
+    pendingLeaves: 0,
+    approvedLeaves: 0,
+  });
+  const [pendingLeaves, setPendingLeaves] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [editingUser, setEditingUser] = useState(null);
 
@@ -21,16 +27,69 @@ const HRDashboard = () => {
     } catch (error) { console.error(error); }
   };
 
-  const fetchAllEmployees = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/users/all?role=${user?.role}`);
-      setAllEmployees(await response.json());
-    } catch (error) { console.error(error); }
+      const fetchAllEmployees = async () => {
+  try {
+    const response = await fetch(
+      `http://localhost:5000/api/users/all?role=${user?.role}`
+    );
+
+    const data = await response.json();
+
+    console.log("All Employees Response:", data);
+
+    setAllEmployees(data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+    const loadOverview = async () => {
+  try {
+    const data = await getOverview();
+
+    if (data.success) {
+      setOverview({
+        totalEmployees: data.totalEmployees,
+        pendingLeaves: data.pendingLeaves,
+        approvedLeaves: data.approvedLeaves,
+      });
+    }
+  } catch (err) {
+    console.error("Overview Error:", err);
+  }
   };
+       const loadPendingLeaves = async () => {
+  try {
+    const data = await getPendingLeaves();
+
+    if (data.success) {
+      setPendingLeaves(data.leaves);
+    }
+  } catch (err) {
+    console.error("Pending Leave Error:", err);
+  }
+};
+
+const handleApproveLeave = async (id) => {
+  try {
+    const data = await approveLeave(id);
+
+    if (data.success) {
+      loadPendingLeaves();
+      loadOverview();
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   useEffect(() => {
+    if (!user) return;
+
     fetchPending();
     fetchAllEmployees();
+    loadOverview();
+    loadPendingLeaves();
+
   }, [user]);
 
   const activeEmployees = allEmployees.filter(u => u.status === 'Approved').length;
@@ -76,10 +135,10 @@ const HRDashboard = () => {
       <div><h1 className="text-2xl font-bold mb-1">HR Analytics</h1><p className="text-slate-400 text-sm">Company-wide workforce summary</p></div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
         {[
-          { title: 'TOTAL EMPLOYEES', value: activeEmployees, sub: 'Active Workforce', icon: <Users size={18} className="text-blue-400" />, iconBg: 'bg-blue-500/10' },
+          { title: 'TOTAL EMPLOYEES', value: overview.totalEmployees, sub: 'Active Workforce', icon: <Users size={18} className="text-blue-400" />, iconBg: 'bg-blue-500/10' },
           { title: 'AVG ATTENDANCE', value: '94.2%', sub: 'Across all depts', icon: <Clock size={18} className="text-emerald-400" />, iconBg: 'bg-emerald-500/10' },
           { title: 'OPEN POSITIONS', value: '8', sub: '4 departments', icon: <Briefcase size={18} className="text-amber-400" />, iconBg: 'bg-amber-500/10' },
-          { title: 'PENDING LEAVES', value: '3', sub: 'Awaiting approval', icon: <Calendar size={18} className="text-purple-400" />, iconBg: 'bg-purple-500/10' }
+          { title: 'PENDING LEAVES', value: overview.pendingLeaves, sub: 'Awaiting approval', icon: <Calendar size={18} className="text-purple-400" />, iconBg: 'bg-purple-500/10' }
         ].map((stat, i) => (
           <div key={i} className="bg-[#12192b] p-6 rounded-xl border border-slate-800 flex flex-col justify-between">
             <div className="flex justify-between items-start mb-4"><span className="text-slate-400 text-xs font-semibold tracking-widest">{stat.title}</span><div className={`p-2 rounded-lg ${stat.iconBg}`}>{stat.icon}</div></div>
@@ -115,7 +174,50 @@ const HRDashboard = () => {
         </div>
       </div>
       )}
+            {pendingLeaves.length > 0 && (
+  <div className="bg-[#12192b] p-6 rounded-xl border border-slate-800 mt-6">
+    <div className="flex justify-between items-center mb-6">
+      <h3 className="text-sm font-bold flex items-center gap-2">
+        <Calendar size={18} className="text-purple-500" />
+        Pending Leave Requests
+      </h3>
 
+      <span className="bg-purple-500/20 text-purple-400 text-xs px-3 py-1 rounded-full font-bold">
+        {pendingLeaves.length} Requests
+      </span>
+    </div>
+
+    <div className="space-y-3">
+      {pendingLeaves.map((leave) => (
+        <div
+          key={leave.id}
+          className="flex items-center justify-between p-4 bg-[#0b1121] border border-slate-800 rounded-xl"
+        >
+          <div>
+            <h4 className="font-bold text-sm">
+              {leave.employeeName}
+            </h4>
+
+            <p className="text-xs text-slate-500">
+              {leave.fromDate} → {leave.toDate}
+            </p>
+
+            <p className="text-xs text-slate-400">
+              {leave.reason}
+            </p>
+          </div>
+
+          <button
+            onClick={() => handleApproveLeave(leave.id)}
+            className="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white text-sm"
+          >
+            Approve
+          </button>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
       <div className="bg-[#12192b] p-6 rounded-xl border border-slate-800 mt-2">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
           <h3 className="text-lg font-bold flex items-center gap-2"><ShieldCheck size={20} className="text-blue-500" /> Employee Directory</h3>

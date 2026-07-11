@@ -1,15 +1,14 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('nexus_hr_db', 'root', 'root', {
+const sequelize = new Sequelize('nexus_hr_db', 'root', 'Manya@2026', {
   host: '127.0.0.1',
-
-    port: 3306,
-    dialect: 'mysql',
-    logging: false,
-    define: {
-      timestamps: false,
-      freezeTableName: true
-    }
+  port: 3306,
+  dialect: 'mysql',
+  logging: false,
+  define: {
+    timestamps: false,
+    freezeTableName: true
+  }
 });
 
 const connectDB = async () => {
