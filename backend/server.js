@@ -3,7 +3,8 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const { connectDB } = require('./config/db');
 const employeeRoutes = require('./routes/employeeRoutes');
-
+const hrRoutes = require('./routes/hrRoutes');
+const adminEmployeeRoutes = require('./routes/adminEmployeeRoutes');
 const app = express();
 
 app.use(cors());
@@ -22,10 +23,13 @@ const db = mysql.createConnection({
     password: 'Manya@2026',
     database: 'nexus_hr_db'
 });
+db.connect((err)=>{
+    if(err){
+        console.log("❌ MySQL Connection Failed:",err.message);
+        return;
+    }
 
-db.connect((err) => {
-    if (err) throw err;
-    console.log('✅ MySQL Database Connected Successfully!');
+    console.log("✅ MySQL Database Connected Successfully!");
     connectDB();
 });
 
@@ -110,6 +114,8 @@ app.put('/api/users/update', (req, res) => {
 // ================= EMPLOYEE ROUTES =================
 app.use('/api/employee', employeeRoutes);
 
+// ================= HR Routes =================
+app.use('/api/hr', hrRoutes);
 // Fallback 404 Handler
 app.use((req, res) => {
     res.status(404).json({ success: false, message: `Resource not found: ${req.url}` });

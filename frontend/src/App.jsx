@@ -21,6 +21,11 @@ import Training from './pages/employee/Training';
 import Documents from './pages/employee/Documents';
 import Settings from './pages/employee/Settings';
 
+// Import HR Pages
+import Overview from './pages/HR/Overview';
+import Employees from './pages/HR/Employees';
+import LeaveApproval from './pages/HR/LeaveApproval';
+
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user } = useAuth();
   if (!user) return <Navigate to="/" />;
@@ -45,10 +50,10 @@ function App() {
 
           {/* ================= HR ROUTES ================= */}
           <Route path="/hr" element={<ProtectedRoute allowedRoles={['HR']}><HRDashboard /></ProtectedRoute>} />
-          <Route path="/hr/employees" element={<ProtectedRoute allowedRoles={['HR']}><PlaceholderPage title="Employee Directory" /></ProtectedRoute>} />
-          <Route path="/hr/leaves" element={<ProtectedRoute allowedRoles={['HR']}><PlaceholderPage title="Leave Approval" /></ProtectedRoute>} />
+          <Route path="/hr/overview" element={<ProtectedRoute allowedRoles={['HR']}><Overview /></ProtectedRoute>} />
+          <Route path="/hr/employees" element={<ProtectedRoute allowedRoles={['HR']}><Employees /></ProtectedRoute>} />
+          <Route path="/hr/leaves" element={<ProtectedRoute allowedRoles={['HR']}><LeaveApproval /></ProtectedRoute>} />
           <Route path="/hr/recruitment" element={<ProtectedRoute allowedRoles={['HR']}><PlaceholderPage title="Recruitment" /></ProtectedRoute>} />
-
           {/* ================= EMPLOYEE ROUTES ================= */}
           <Route path="/employee" element={<ProtectedRoute allowedRoles={['Employee']}><DashboardHome /></ProtectedRoute>} />
           <Route path="/employee/profile" element={<ProtectedRoute allowedRoles={['Employee']}><Profile /></ProtectedRoute>} />
