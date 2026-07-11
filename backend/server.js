@@ -4,7 +4,6 @@ const cors = require('cors');
 const { connectDB } = require('./config/db');
 const employeeRoutes = require('./routes/employeeRoutes');
 const hrRoutes = require('./routes/hrRoutes');
-const adminEmployeeRoutes = require('./routes/adminEmployeeRoutes');
 const app = express();
 
 app.use(cors());
