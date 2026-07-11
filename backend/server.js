@@ -3,11 +3,13 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const { connectDB } = require('./config/db');
 const employeeRoutes = require('./routes/employeeRoutes');
+const hrRoutes = require("./routes/hrRoutes");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/api/hr", hrRoutes);
 
 // API Tracker Logger
 app.use((req, res, next) => {
@@ -17,12 +19,13 @@ app.use((req, res, next) => {
 
 // Database Connection
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',      
-    password: 'manu@123',
+    host: '127.0.0.1',
+    port: 3306,
+    user: 'root',
+    password: 'root',
     database: 'nexus_hr_db'
 });
-
+module.exports.db = db;
 db.connect((err) => {
     if (err) throw err;
     console.log('✅ MySQL Database Connected Successfully!');
