@@ -25,6 +25,9 @@ import Settings from './pages/employee/Settings';
 import Overview from './pages/HR/Overview';
 import Employees from './pages/HR/Employees';
 import LeaveApproval from './pages/HR/LeaveApproval';
+import RecruitmentPage from './pages/hr/RecruitmentPage';
+import DepartmentsPage from './pages/hr/DepartmentsPage';
+import PerformancePage from './pages/hr/PerformancePage';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user } = useAuth();
@@ -53,9 +56,9 @@ function App() {
           <Route path="/hr/overview" element={<ProtectedRoute allowedRoles={['HR']}><Overview /></ProtectedRoute>} />
           <Route path="/hr/employees" element={<ProtectedRoute allowedRoles={['HR']}><Employees /></ProtectedRoute>} />
           <Route path="/hr/leaves" element={<ProtectedRoute allowedRoles={['HR']}><LeaveApproval /></ProtectedRoute>} />
-          <Route path="/hr/recruitment" element={<ProtectedRoute allowedRoles={['HR']}><PlaceholderPage title="Recruitment" /></ProtectedRoute>} />
-          <Route path="/hr/departments" element={<ProtectedRoute allowedRoles={['HR']}><PlaceholderPage title="Departments" /></ProtectedRoute>} />
-          <Route path="/hr/performance" element={<ProtectedRoute allowedRoles={['HR']}><PlaceholderPage title="Performance" /></ProtectedRoute>} />
+          <Route path="/hr/recruitment" element={<ProtectedRoute allowedRoles={['HR']}><RecruitmentPage /></ProtectedRoute>} />
+          <Route path="/hr/departments" element={<ProtectedRoute allowedRoles={['HR']}><DepartmentsPage /></ProtectedRoute>} />
+          <Route path="/hr/performance" element={<ProtectedRoute allowedRoles={['HR']}><PerformancePage /></ProtectedRoute>} />
           {/* ================= EMPLOYEE ROUTES ================= */}
           <Route path="/employee" element={<ProtectedRoute allowedRoles={['Employee']}><DashboardHome /></ProtectedRoute>} />
           <Route path="/employee/profile" element={<ProtectedRoute allowedRoles={['Employee']}><Profile /></ProtectedRoute>} />

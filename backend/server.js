@@ -4,10 +4,12 @@ const cors = require('cors');
 const { connectDB } = require('./config/db');
 const employeeRoutes = require('./routes/employeeRoutes');
 const hrRoutes = require('./routes/hrRoutes');
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/api/hr", hrRoutes);
 
 // API Tracker Logger
 app.use((req, res, next) => {
@@ -22,12 +24,14 @@ const db = mysql.createConnection({
     password: 'Manya@2026',
     database: 'nexus_hr_db'
 });
-db.connect((err)=>{
-    if(err){
-        console.log("❌ MySQL Connection Failed:",err.message);
+
+module.exports.db = db;
+
+db.connect((err) => {
+    if (err) {
+        console.log("❌ MySQL Connection Failed:", err.message);
         return;
     }
-
     console.log("✅ MySQL Database Connected Successfully!");
     connectDB();
 });
