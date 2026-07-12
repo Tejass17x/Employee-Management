@@ -6,6 +6,7 @@ const employeeRoutes = require('./routes/employeeRoutes');
 const adminDashboardRoutes = require("./routes/adminDashboardRoutes");
 const payrollRoutes = require("./routes/payrollRoutes");
 const { auditWriteRequests } = require("./utils/auditLogger");
+const hrRoutes = require('./routes/hrRoutes');
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(auditWriteRequests);
 app.use("/api/admin", adminDashboardRoutes);
 app.use("/api/payroll", payrollRoutes);
+app.use("/api/hr", hrRoutes);
 
 // API Tracker Logger
 app.use((req, res, next) => {
@@ -25,13 +27,18 @@ app.use((req, res, next) => {
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',      
-    password: 'SQLserver@4321',
+    password: 'Manya@2026',
     database: 'nexus_hr_db'
 });
 
+module.exports.db = db;
+
 db.connect((err) => {
-    if (err) throw err;
-    console.log('âœ… MySQL Database Connected Successfully!');
+    if (err) {
+        console.log("❌ MySQL Connection Failed:", err.message);
+        return;
+    }
+    console.log("✅ MySQL Database Connected Successfully!");
     connectDB();
 });
 const runtimeSettingDefaults = {
@@ -161,6 +168,8 @@ app.put('/api/users/update', (req, res) => {
 // ================= EMPLOYEE ROUTES =================
 app.use('/api/employee', employeeRoutes);
 
+// ================= HR Routes =================
+app.use('/api/hr', hrRoutes);
 // Fallback 404 Handler
 app.use((req, res) => {
     res.status(404).json({ success: false, message: `Resource not found: ${req.url}` });
