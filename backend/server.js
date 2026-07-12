@@ -71,7 +71,7 @@ const getRuntimeSetting = async (section) => {
 
 // ================= LOGIN API =================
 app.post('/api/login', (req, res) => {
-    console.log("ðŸ‘‰ Login attempt for:", req.body.email);
+    console.log("👉 Login attempt for:", req.body.email);
     
     const { email, password, role } = req.body;
     const sql = "SELECT * FROM users WHERE email = ? AND password = ? AND role = ?";
@@ -85,7 +85,7 @@ app.post('/api/login', (req, res) => {
                 if (user.status === 'Pending') return res.status(403).json({ success: false, message: "Account pending approval." });
                 if (user.status === 'Rejected') return res.status(403).json({ success: false, message: "Account rejected." });
             }
-            console.log("âœ… Login Success for:", user.name);
+            console.log("✅ Login Success for:", user.name);
             res.json({ success: true, user });
         } else {
             res.status(401).json({ success: false, message: "Invalid Credentials!" });
@@ -175,5 +175,5 @@ app.use((req, res) => {
     res.status(404).json({ success: false, message: `Resource not found: ${req.url}` });
 });
 
-app.listen(5000, () => console.log('ðŸš€ Backend perfectly running on port 5000'));
+app.listen(5000, () => console.log('🚀 Backend perfectly running on port 5000'));
 
