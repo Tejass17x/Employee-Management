@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './components/LoginPage';
 import AdminDashboard from './pages/AdminDashboard';
@@ -20,6 +20,12 @@ import Notifications from './pages/employee/Notifications';
 import Training from './pages/employee/Training';
 import Documents from './pages/employee/Documents';
 import Settings from './pages/employee/Settings';
+// Import admin pages
+import UserManagement from "./pages/admin/UserManagement";
+import AdminPayroll from "./pages/admin/Payroll";
+import AdminReports from "./pages/admin/Reports";
+import AdminSystemSettings from "./pages/admin/SystemSettings";
+import AdminAuditLogs from "./pages/admin/AuditLogs";
 
 // Import HR Pages
 import Overview from './pages/HR/Overview';
@@ -45,11 +51,11 @@ function App() {
 
           {/* ================= ADMIN ROUTES ================= */}
           <Route path="/admin" element={<ProtectedRoute allowedRoles={['Admin']}><AdminDashboard /></ProtectedRoute>} />
-          <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['Admin']}><PlaceholderPage title="User Management" /></ProtectedRoute>} />
-          <Route path="/admin/payroll" element={<ProtectedRoute allowedRoles={['Admin']}><PlaceholderPage title="Admin Payroll" /></ProtectedRoute>} />
-          <Route path="/admin/reports" element={<ProtectedRoute allowedRoles={['Admin']}><PlaceholderPage title="System Reports" /></ProtectedRoute>} />
-          <Route path="/admin/settings" element={<ProtectedRoute allowedRoles={['Admin']}><PlaceholderPage title="System Settings" /></ProtectedRoute>} />
-          <Route path="/admin/logs" element={<ProtectedRoute allowedRoles={['Admin']}><PlaceholderPage title="Audit Logs" /></ProtectedRoute>} />
+          <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['Admin']}><UserManagement /></ProtectedRoute>} />
+          <Route path="/admin/payroll" element={<ProtectedRoute allowedRoles={['Admin']}><AdminPayroll /></ProtectedRoute>} />
+          <Route path="/admin/reports" element={<ProtectedRoute allowedRoles={['Admin']}><AdminReports /></ProtectedRoute>} />
+          <Route path="/admin/settings" element={<ProtectedRoute allowedRoles={['Admin']}><AdminSystemSettings /></ProtectedRoute>} />
+          <Route path="/admin/logs" element={<ProtectedRoute allowedRoles={['Admin']}><AdminAuditLogs /></ProtectedRoute>} />
 
           {/* ================= HR ROUTES ================= */}
           <Route path="/hr" element={<ProtectedRoute allowedRoles={['HR']}><HRDashboard /></ProtectedRoute>} />
@@ -79,3 +85,7 @@ function App() {
 }
 
 export default App;
+
+
+
+
