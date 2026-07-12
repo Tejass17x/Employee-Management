@@ -214,3 +214,39 @@ INSERT INTO employee_profiles (user_id, phone, address, job_title, department, j
  '[{"name":"React","level":90},{"name":"JavaScript","level":95},{"name":"Node.js","level":80},{"name":"CSS/Tailwind","level":85}]',
  '["AWS Certified Developer Associate", "Scrum Master Certification (PSM I)"]',
  'Mary Doe', 'Spouse', '+1-555-0188');
+-- 12. System Settings Table
+CREATE TABLE system_settings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    setting_key VARCHAR(100) NOT NULL UNIQUE,
+    setting_value JSON NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Seed System Settings
+INSERT INTO system_settings (setting_key, setting_value) VALUES
+('organization', JSON_OBJECT('companyName', 'Nexus HR', 'companyEmail', 'admin@nexus.io', 'timezone', 'Asia/Calcutta', 'fiscalYearStart', 'January', 'defaultCurrency', 'USD')),
+('security', JSON_OBJECT('requireApprovalForSignup', true, 'allowEmployeeSelfRegistration', true, 'sessionTimeoutMinutes', 60, 'passwordMinLength', 8, 'maintenanceMode', false)),
+('attendance', JSON_OBJECT('workdayStart', '09:00', 'workdayEnd', '18:00', 'lateGraceMinutes', 15, 'weeklyWorkDays', 5, 'allowSelfCheckout', true)),
+('payroll', JSON_OBJECT('payrollCycle', 'Monthly', 'payDay', 30, 'overtimeEnabled', false, 'taxDeductionLabel', 'Taxes & PF', 'autoGeneratePayslips', false)),
+('notifications', JSON_OBJECT('emailNotifications', true, 'leaveAlerts', true, 'payrollAlerts', true, 'taskAlerts', true, 'systemDigest', 'Weekly'));
+
+-- 13. Audit Logs Table
+CREATE TABLE audit_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    actor_id INT NULL,
+    actor_role VARCHAR(50),
+    action VARCHAR(100) NOT NULL,
+    module VARCHAR(100) NOT NULL,
+    method VARCHAR(10),
+    endpoint VARCHAR(255),
+    status_code INT,
+    ip_address VARCHAR(100),
+    details JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Seed Audit Logs
+INSERT INTO audit_logs (actor_id, actor_role, action, module, method, endpoint, status_code, ip_address, details, created_at) VALUES
+(1, 'Admin', 'Initial System Setup', 'System', 'POST', '/api/admin/settings', 200, '127.0.0.1', JSON_OBJECT('message', 'Default settings configured'), '2026-07-11 09:00:00'),
+(1, 'Admin', 'Create Payroll', 'Payroll', 'POST', '/api/payroll', 201, '127.0.0.1', JSON_OBJECT('period', 'June 2026'), '2026-07-11 10:15:00'),
+(1, 'Admin', 'Review User Access', 'User Management', 'PUT', '/api/users/action', 200, '127.0.0.1', JSON_OBJECT('status', 'Approved'), '2026-07-11 11:30:00');
