@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const LeaveRequest = require("../models/LeaveRequest");
+const { sequelize } = require("../config/db");
 
 // ================= OVERVIEW =================
 const getOverview = async (req, res) => {
@@ -77,17 +78,17 @@ const getEmployees = async (req, res) => {
 // ================= PENDING LEAVES =================
 const getPendingLeaves = async (req, res) => {
   try {
-
-    const leaves = await LeaveRequest.findAll({
-      where: {
-        status: "Pending"
-      },
-      order: [["applied_at", "DESC"]]
-    });
+    const [results] = await sequelize.query(`
+      SELECT lr.*, u.name AS employee_name
+      FROM leave_requests lr
+      LEFT JOIN users u ON u.id = lr.user_id
+      WHERE lr.status = 'Pending'
+      ORDER BY lr.applied_at DESC
+    `);
 
     res.json({
       success: true,
-      leaves
+      leaves: results
     });
 
   } catch (error) {

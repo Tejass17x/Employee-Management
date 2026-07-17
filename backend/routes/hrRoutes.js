@@ -1,71 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const { sequelize } = require("../config/db");
+const {
+  getOverview,
+  getEmployees,
+  getPendingLeaves,
+  approveLeave
+} = require("../controllers/hrController");
 
-// Get HR Overview
-router.get("/overview", async (req, res) => {
-    try {
-        const [empResult] = await sequelize.query(
-            "SELECT COUNT(*) AS totalEmployees FROM users WHERE role = 'Employee' AND status = 'Approved'"
-        );
-        const [pendingResult] = await sequelize.query(
-            "SELECT COUNT(*) AS pendingLeaves FROM leave_requests WHERE status = 'Pending'"
-        );
-        const [approvedResult] = await sequelize.query(
-            "SELECT COUNT(*) AS approvedLeaves FROM leave_requests WHERE status = 'Approved'"
-        );
-
-        res.json({
-            success: true,
-            totalEmployees: empResult[0].totalEmployees,
-            pendingLeaves: pendingResult[0].pendingLeaves,
-            approvedLeaves: approvedResult[0].approvedLeaves,
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Database error" });
-    }
-});
-
-// Get all employees
-router.get("/employees", async (req, res) => {
-    try {
-        const [results] = await sequelize.query(
-            "SELECT id, name, email, role, status, created_at FROM users WHERE role = 'Employee' AND status = 'Approved'"
-        );
-        res.json({ success: true, employees: results });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Database error" });
-    }
-});
-
-// Get pending leave requests
-router.get("/leave", async (req, res) => {
-    try {
-        const [results] = await sequelize.query(
-            "SELECT * FROM leave_requests WHERE status = 'Pending' ORDER BY applied_at DESC"
-        );
-        res.json({ success: true, leaves: results });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Database error" });
-    }
-});
-
-// Approve a leave request
-router.put("/leave/:id", async (req, res) => {
-    try {
-        await sequelize.query(
-            "UPDATE leave_requests SET status = 'Approved' WHERE id = ?",
-            { replacements: [req.params.id] }
-        );
-        res.json({ success: true, message: "Leave Approved Successfully" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Database error" });
-    }
-});
+// HR-specific API routes
+router.get("/overview", getOverview);
+router.get("/employees", getEmployees);
+router.get("/leave", getPendingLeaves);
+router.put("/leave/:id", approveLeave);
 
 router.get("/departments", async (req, res) => {
     try {

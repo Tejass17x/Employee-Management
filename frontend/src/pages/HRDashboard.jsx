@@ -195,7 +195,7 @@ const handleApproveLeave = async (id) => {
         >
           <div>
             <h4 className="font-bold text-sm">
-              {leave.leave_type}
+              {leave.employee_name}
             </h4>
 
             <p className="text-xs text-slate-500">
