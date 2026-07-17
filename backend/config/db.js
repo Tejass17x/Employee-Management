@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('nexus_hr_db', 'root', 'Manya@2026', {
+const sequelize = new Sequelize('nexus_hr_db', 'root', 'root', {
   host: '127.0.0.1',
   port: 3306,
   dialect: 'mysql',
