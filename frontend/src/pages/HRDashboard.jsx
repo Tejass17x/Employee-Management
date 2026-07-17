@@ -195,11 +195,11 @@ const handleApproveLeave = async (id) => {
         >
           <div>
             <h4 className="font-bold text-sm">
-              {leave.employeeName}
+              {leave.leave_type}
             </h4>
 
             <p className="text-xs text-slate-500">
-              {leave.fromDate} → {leave.toDate}
+              {leave.start_date} → {leave.end_date}
             </p>
 
             <p className="text-xs text-slate-400">

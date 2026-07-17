@@ -1,4 +1,4 @@
-﻿const express = require('express');
+const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
 const { connectDB } = require('./config/db');
@@ -168,8 +168,7 @@ app.put('/api/users/update', (req, res) => {
 // ================= EMPLOYEE ROUTES =================
 app.use('/api/employee', employeeRoutes);
 
-// ================= HR Routes =================
-app.use('/api/hr', hrRoutes);
+
 // Fallback 404 Handler
 app.use((req, res) => {
     res.status(404).json({ success: false, message: `Resource not found: ${req.url}` });

@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './components/LoginPage';
 import AdminDashboard from './pages/AdminDashboard';
@@ -31,9 +31,9 @@ import AdminAuditLogs from "./pages/admin/AuditLogs";
 import Overview from './pages/HR/Overview';
 import Employees from './pages/HR/Employees';
 import LeaveApproval from './pages/HR/LeaveApproval';
-import RecruitmentPage from './pages/hr/RecruitmentPage';
-import DepartmentsPage from './pages/hr/DepartmentsPage';
-import PerformancePage from './pages/hr/PerformancePage';
+import RecruitmentPage from './pages/HR/RecruitmentPage';
+import DepartmentsPage from './pages/HR/DepartmentsPage';
+import PerformancePage from './pages/HR/PerformancePage';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user } = useAuth();
